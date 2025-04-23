@@ -7,6 +7,35 @@ const Cau2 = () => {
     { id: 3, name: 'Lê Văn C', class: '10C2', age: 15 },
   ]);
 
+  const [newStudent, setNewStudent] = useState({
+    name: '',
+    class: '',
+    age: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewStudent({ ...newStudent, [name]: value });
+  };
+
+  const handleAddStudent = () => {
+    if (!newStudent.name || !newStudent.class || !newStudent.age) {
+      alert('Vui lòng nhập đầy đủ thông tin!');
+      return;
+    }
+
+    const newId = students.length > 0 ? students[students.length - 1].id + 1 : 1;
+    const studentToAdd = {
+      id: newId,
+      name: newStudent.name,
+      class: newStudent.class,
+      age: parseInt(newStudent.age),
+    };
+
+    setStudents([...students, studentToAdd]);
+    setNewStudent({ name: '', class: '', age: '' });
+  };
+
   const handleDelete = (id) => {
     setStudents(students.filter(student => student.id !== id));
   };
@@ -14,6 +43,42 @@ const Cau2 = () => {
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">📋 Danh sách sinh viên</h2>
+
+      {/* Form nhập sinh viên mới */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <input
+          type="text"
+          name="name"
+          placeholder="Họ tên"
+          value={newStudent.name}
+          onChange={handleChange}
+          className="border border-gray-300 rounded-md px-3 py-2"
+        />
+        <input
+          type="text"
+          name="class"
+          placeholder="Lớp"
+          value={newStudent.class}
+          onChange={handleChange}
+          className="border border-gray-300 rounded-md px-3 py-2"
+        />
+        <input
+          type="number"
+          name="age"
+          placeholder="Tuổi"
+          value={newStudent.age}
+          onChange={handleChange}
+          className="border border-gray-300 rounded-md px-3 py-2"
+        />
+        <button
+          onClick={handleAddStudent}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md transition"
+        >
+          Thêm sinh viên
+        </button>
+      </div>
+
+      {/* Bảng danh sách */}
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr className="bg-gray-100 text-gray-700">
