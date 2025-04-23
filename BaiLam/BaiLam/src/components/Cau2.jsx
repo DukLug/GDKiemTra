@@ -112,13 +112,13 @@ const Cau2 = () => {
       </div>
 
       {/* Bảng danh sách */}
-      <table className="min-w-full bg-white border border-gray-200">
+      <table className="min-w-full bg-white border border-gray-700 ">
         <thead>
           <tr className="bg-gray-100 text-gray-700">
             <th className="py-3 px-4 border-b">Tên</th>
             <th className="py-3 px-4 border-b">Lớp</th>
             <th className="py-3 px-4 border-b">Tuổi</th>
-            <th className="py-3 px-4 border-b">Hành động</th>
+            <th className="py-3 px-4 border-b"></th>
           </tr>
         </thead>
         <tbody>
