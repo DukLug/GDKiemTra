@@ -7,11 +7,10 @@ const Cau2 = () => {
     { id: 3, name: 'Lê Văn C', class: '10C2', age: 15 },
   ]);
 
-  const [newStudent, setNewStudent] = useState({
-    name: '',
-    class: '',
-    age: ''
-  });
+  const [newStudent, setNewStudent] = useState({ name: '', class: '', age: '' });
+
+  const [editingId, setEditingId] = useState(null);
+  const [editedStudent, setEditedStudent] = useState({ name: '', class: '', age: '' });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,7 +22,6 @@ const Cau2 = () => {
       alert('Vui lòng nhập đầy đủ thông tin!');
       return;
     }
-
     const newId = students.length > 0 ? students[students.length - 1].id + 1 : 1;
     const studentToAdd = {
       id: newId,
@@ -31,20 +29,40 @@ const Cau2 = () => {
       class: newStudent.class,
       age: parseInt(newStudent.age),
     };
-
     setStudents([...students, studentToAdd]);
     setNewStudent({ name: '', class: '', age: '' });
   };
 
-  //cau4 
   const handleDelete = (id) => {
     setStudents(students.filter(student => student.id !== id));
   };
 
+  const handleEditClick = (student) => {
+    setEditingId(student.id);
+    setEditedStudent({ name: student.name, class: student.class, age: student.age });
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditedStudent({ ...editedStudent, [name]: value });
+  };
+
+  const handleSaveEdit = (id) => {
+    setStudents(students.map(student =>
+      student.id === id ? { ...student, ...editedStudent, age: parseInt(editedStudent.age) } : student
+    ));
+    setEditingId(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+  };
+
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+    <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">📋 Danh sách sinh viên</h2>
 
+      {/* Form thêm sinh viên */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <input
           type="text"
@@ -78,7 +96,7 @@ const Cau2 = () => {
         </button>
       </div>
 
-      {/* Bảng danh sách */}
+      {/* Bảng danh sách sinh viên */}
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr className="bg-gray-100 text-gray-700">
@@ -91,17 +109,71 @@ const Cau2 = () => {
         <tbody>
           {students.map(student => (
             <tr key={student.id} className="hover:bg-gray-50 transition">
-              <td className="py-2 px-4 border-b">{student.name}</td>
-              <td className="py-2 px-4 border-b">{student.class}</td>
-              <td className="py-2 px-4 border-b">{student.age}</td>
-              <td className="py-2 px-4 border-b text-center">
-                <button
-                  onClick={() => handleDelete(student.id)}
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-md transition"
-                >
-                  Xoá
-                </button>
-              </td>
+              {editingId === student.id ? (
+                <>
+                  <td className="py-2 px-4 border-b">
+                    <input
+                      type="text"
+                      name="name"
+                      value={editedStudent.name}
+                      onChange={handleEditChange}
+                      className="border border-gray-300 rounded-md px-2 py-1 w-full"
+                    />
+                  </td>
+                  <td className="py-2 px-4 border-b">
+                    <input
+                      type="text"
+                      name="class"
+                      value={editedStudent.class}
+                      onChange={handleEditChange}
+                      className="border border-gray-300 rounded-md px-2 py-1 w-full"
+                    />
+                  </td>
+                  <td className="py-2 px-4 border-b">
+                    <input
+                      type="number"
+                      name="age"
+                      value={editedStudent.age}
+                      onChange={handleEditChange}
+                      className="border border-gray-300 rounded-md px-2 py-1 w-full"
+                    />
+                  </td>
+                  <td className="py-2 px-4 border-b text-center space-x-2">
+                    <button
+                      onClick={() => handleSaveEdit(student.id)}
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md"
+                    >
+                      Lưu
+                    </button>
+                    <button
+                      onClick={handleCancelEdit}
+                      className="bg-gray-400 hover:bg-gray-500 text-white px-3 py-1 rounded-md"
+                    >
+                      Huỷ
+                    </button>
+                  </td>
+                </>
+              ) : (
+                <>
+                  <td className="py-2 px-4 border-b">{student.name}</td>
+                  <td className="py-2 px-4 border-b">{student.class}</td>
+                  <td className="py-2 px-4 border-b">{student.age}</td>
+                  <td className="py-2 px-4 border-b text-center space-x-2">
+                    <button
+                      onClick={() => handleEditClick(student)}
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md"
+                    >
+                      Sửa
+                    </button>
+                    <button
+                      onClick={() => handleDelete(student.id)}
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
+                    >
+                      Xoá
+                    </button>
+                  </td>
+                </>
+              )}
             </tr>
           ))}
           {students.length === 0 && (
