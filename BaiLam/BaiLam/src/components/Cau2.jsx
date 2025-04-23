@@ -58,6 +58,16 @@ const Cau2 = () => {
     setEditingId(null);
   };
 
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredStudents = students.filter(student =>
+    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  
+  
+
+
   return (
     <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">📋 Danh sách sinh viên</h2>
@@ -96,6 +106,16 @@ const Cau2 = () => {
         </button>
       </div>
 
+        <div className="mb-6">
+            <input
+                type="text"
+                placeholder="🔍 Tìm theo tên sinh viên..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full md:w-1/2 border border-gray-300 rounded-md px-4 py-2"
+            />
+        </div>
+
       {/* Bảng danh sách sinh viên */}
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
@@ -107,7 +127,7 @@ const Cau2 = () => {
           </tr>
         </thead>
         <tbody>
-          {students.map(student => (
+          {filteredStudents.map(student => (
             <tr key={student.id} className="hover:bg-gray-50 transition">
               {editingId === student.id ? (
                 <>
