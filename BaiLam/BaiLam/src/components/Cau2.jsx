@@ -60,13 +60,19 @@ const Cau2 = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
 
+
+  
+
+  const [selectedClass, setSelectedClass] = useState('all');
+
+  const uniqueClasses = [...new Set(students.map(s => s.class))];
+
+  
+  
   const filteredStudents = students.filter(student =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+    student.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (selectedClass === 'all' || student.class === selectedClass)
   );
-
-  
-  
-
 
   return (
     <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
@@ -106,7 +112,8 @@ const Cau2 = () => {
         </button>
       </div>
 
-        <div className="mb-6">
+        <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            {/* Input tìm kiếm */}
             <input
                 type="text"
                 placeholder="🔍 Tìm theo tên sinh viên..."
@@ -114,7 +121,20 @@ const Cau2 = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full md:w-1/2 border border-gray-300 rounded-md px-4 py-2"
             />
+
+            {/* Select lọc lớp */}
+            <select
+                value={selectedClass}
+                onChange={(e) => setSelectedClass(e.target.value)}
+                className="w-full md:w-1/4 border border-gray-300 rounded-md px-4 py-2"
+            >
+                <option value="all">📚 Tất cả các lớp</option>
+                {uniqueClasses.map(cls => (
+                <option key={cls} value={cls}>{cls}</option>
+                ))}
+            </select>
         </div>
+
 
       {/* Bảng danh sách sinh viên */}
       <table className="min-w-full bg-white border border-gray-200">
