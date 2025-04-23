@@ -1,78 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Cau2 = () => {
-  const [students, setStudents] = useState([
-    { id: 1, name: 'Nguyễn Văn A', class: '12A1', age: 17 },
-    { id: 2, name: 'Trần Thị B', class: '11B3', age: 16 },
-    { id: 3, name: 'Lê Văn C', class: '10C2', age: 15 },
-  ]);
+    const [students, setStudents] = useState(() => {
+        const stored = localStorage.getItem('students');
+        return stored ? JSON.parse(stored) : [
+          { id: 1, name: 'Nguyễn Văn A', class: '12A1', age: 17 },
+          { id: 2, name: 'Trần Thị B', class: '11B3', age: 16 },
+          { id: 3, name: 'Lê Văn C', class: '10C2', age: 15 },
+        ];
+      });
+      
 
-  const [newStudent, setNewStudent] = useState({ name: '', class: '', age: '' });
+    useEffect(() => {
+        localStorage.setItem('students', JSON.stringify(students));
+        console.log("Loaded data from previous section: ", students);
+    }, [students]);
 
-  const [editingId, setEditingId] = useState(null);
-  const [editedStudent, setEditedStudent] = useState({ name: '', class: '', age: '' });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewStudent({ ...newStudent, [name]: value });
-  };
+    const [newStudent, setNewStudent] = useState({ name: '', class: '', age: '' });
 
-  const handleAddStudent = () => {
-    if (!newStudent.name || !newStudent.class || !newStudent.age) {
-      alert('Vui lòng nhập đầy đủ thông tin!');
-      return;
-    }
-    const newId = students.length > 0 ? students[students.length - 1].id + 1 : 1;
-    const studentToAdd = {
-      id: newId,
-      name: newStudent.name,
-      class: newStudent.class,
-      age: parseInt(newStudent.age),
+    const [editingId, setEditingId] = useState(null);
+    const [editedStudent, setEditedStudent] = useState({ name: '', class: '', age: '' });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setNewStudent({ ...newStudent, [name]: value });
     };
-    setStudents([...students, studentToAdd]);
-    setNewStudent({ name: '', class: '', age: '' });
-  };
 
-  const handleDelete = (id) => {
-    setStudents(students.filter(student => student.id !== id));
-  };
+    const handleAddStudent = () => {
+        if (!newStudent.name || !newStudent.class || !newStudent.age) {
+        alert('Vui lòng nhập đầy đủ thông tin!');
+        return;
+        }
+        const newId = students.length > 0 ? students[students.length - 1].id + 1 : 1;
+        const studentToAdd = {
+        id: newId,
+        name: newStudent.name,
+        class: newStudent.class,
+        age: parseInt(newStudent.age),
+        };
+        setStudents([...students, studentToAdd]);
+        setNewStudent({ name: '', class: '', age: '' });
+    };
 
-  const handleEditClick = (student) => {
-    setEditingId(student.id);
-    setEditedStudent({ name: student.name, class: student.class, age: student.age });
-  };
+    const handleDelete = (id) => {
+        setStudents(students.filter(student => student.id !== id));
+    };
 
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditedStudent({ ...editedStudent, [name]: value });
-  };
+    const handleEditClick = (student) => {
+        setEditingId(student.id);
+        setEditedStudent({ name: student.name, class: student.class, age: student.age });
+    };
 
-  const handleSaveEdit = (id) => {
-    setStudents(students.map(student =>
-      student.id === id ? { ...student, ...editedStudent, age: parseInt(editedStudent.age) } : student
-    ));
-    setEditingId(null);
-  };
+    const handleEditChange = (e) => {
+        const { name, value } = e.target;
+        setEditedStudent({ ...editedStudent, [name]: value });
+    };
 
-  const handleCancelEdit = () => {
-    setEditingId(null);
-  };
+    const handleSaveEdit = (id) => {
+        setStudents(students.map(student =>
+        student.id === id ? { ...student, ...editedStudent, age: parseInt(editedStudent.age) } : student
+        ));
+        setEditingId(null);
+    };
 
-  const [searchTerm, setSearchTerm] = useState('');
+    const handleCancelEdit = () => {
+        setEditingId(null);
+    };
 
+    const [searchTerm, setSearchTerm] = useState('');
+
+
+    
+
+    const [selectedClass, setSelectedClass] = useState('all');
+
+    const uniqueClasses = [...new Set(students.map(s => s.class))];
 
   
-
-  const [selectedClass, setSelectedClass] = useState('all');
-
-  const uniqueClasses = [...new Set(students.map(s => s.class))];
-
   
-  
-  const filteredStudents = students.filter(student =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (selectedClass === 'all' || student.class === selectedClass)
-  );
+    const filteredStudents = students.filter(student =>
+        student.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (selectedClass === 'all' || student.class === selectedClass)
+    );
 
   return (
     <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
