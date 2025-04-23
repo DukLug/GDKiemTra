@@ -36,6 +36,7 @@ const Cau2 = () => {
     setNewStudent({ name: '', class: '', age: '' });
   };
 
+  //cau4 
   const handleDelete = (id) => {
     setStudents(students.filter(student => student.id !== id));
   };
@@ -44,7 +45,6 @@ const Cau2 = () => {
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">📋 Danh sách sinh viên</h2>
 
-      {/* Form nhập sinh viên mới */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <input
           type="text"
